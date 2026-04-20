@@ -1,0 +1,227 @@
+{
+  "meta": {
+    "project": "Engram Conditional Memory for LLMs — Consumer Hardware Evaluation",
+    "date_compiled": "2026-04-20",
+    "hardware": "NVIDIA RTX 4090 24GB VRAM",
+    "training_data": "WikiText-103 + Math + Code + Science (multi-domain)",
+    "eval_data": "WikiText-103 test split",
+    "conclusion": "Engram consistently improves perplexity (24-30%) but NEVER transfers to downstream benchmarks. Negative result across 3 model sizes, 2 training modes, and varying training durations."
+  },
+  "experiments": {
+    "qwen25_05b_frozen_100k": {
+      "model": "Qwen2.5-0.5B",
+      "mode": "frozen_base + engram_only",
+      "training_steps": 100000,
+      "engram_layers": [1, 8, 16, 23],
+      "experiment_dir": "experiments/sweep_5x_100k",
+      "perplexity": {
+        "baseline_ppl": 20.75,
+        "baseline_ce_loss": 3.0324,
+        "engram_ppl": 15.73,
+        "engram_ce_loss": 2.7553,
+        "ppl_reduction_pct": -24.2
+      },
+      "downstream": {
+        "baseline": {
+          "hellaswag": 0.360,
+          "piqa": 0.6991,
+          "arc_challenge": 0.2927
+        },
+        "engram_2layer": {
+          "hellaswag": 0.3575,
+          "arc_challenge": 0.2850
+        },
+        "engram_4layer": {
+          "hellaswag": 0.3635,
+          "piqa": 0.6877,
+          "arc_challenge": 0.2961
+        },
+        "delta_4layer": {
+          "hellaswag_pp": +0.35,
+          "piqa_pp": -1.14,
+          "arc_challenge_pp": +0.34
+        }
+      }
+    },
+    "qwen25_15b_frozen_5k": {
+      "model": "Qwen2.5-1.5B",
+      "mode": "frozen_base + engram_only",
+      "training_steps": 5000,
+      "perplexity": {
+        "baseline_ppl": 14.84,
+        "baseline_ce_loss": 2.6973,
+        "ablation_L1_only": {
+          "ppl": 11.55, "ce_loss": 2.4466, "layers": [1], "steps": 5000, "ppl_reduction_pct": -22.2
+        },
+        "ablation_L16_only": {
+          "ppl": 11.90, "ce_loss": 2.4761, "layers": [16], "steps": 5000, "ppl_reduction_pct": -19.8
+        },
+        "layers2_5k": {
+          "ppl": 11.18, "ce_loss": 2.4144, "layers": [1, 16], "steps": 5000, "ppl_reduction_pct": -24.7
+        },
+        "layers2_20k": {
+          "ppl": 11.13, "ce_loss": 2.41, "layers": [1, 16], "steps": 20000, "ppl_reduction_pct": -25.0
+        },
+        "layers4_5k": {
+          "ppl": 11.02, "ce_loss": 2.3993, "layers": [1, 9, 18, 26], "steps": 5000, "ppl_reduction_pct": -25.7
+        }
+      },
+      "downstream": {
+        "baseline": {
+          "hellaswag": 0.418,
+          "arc_challenge": 0.3588
+        },
+        "engram_4layer": {
+          "hellaswag": 0.421,
+          "arc_challenge": 0.3527
+        },
+        "delta_4layer": {
+          "hellaswag_pp": +0.3,
+          "arc_challenge_pp": -0.6
+        }
+      }
+    },
+    "qwen35_4b_frozen_10k": {
+      "model": "Qwen3.5-4B-Base",
+      "mode": "frozen_base + engram_only",
+      "training_steps": 10000,
+      "engram_layers": [1, 8, 16, 23],
+      "experiment_dir": "experiments/qwen35_4b_10k",
+      "perplexity": {
+        "baseline_ppl": 12.87,
+        "baseline_ce_loss": 2.5547,
+        "engram_ppl": 9.76,
+        "engram_ce_loss": 2.2782,
+        "ppl_reduction_pct": -24.2
+      },
+      "downstream": {
+        "baseline": {
+          "hellaswag": 0.5426,
+          "piqa": 0.7830,
+          "arc_challenge": 0.4019
+        },
+        "engram": {
+          "hellaswag": 0.5424,
+          "piqa": 0.7797,
+          "arc_challenge": 0.4198
+        },
+        "delta": {
+          "hellaswag_pp": -0.02,
+          "piqa_pp": -0.33,
+          "arc_challenge_pp": +1.79
+        }
+      },
+      "note": "Baseline values from separate run; engram values from benchmark_qwen35_engram.json"
+    },
+    "qwen35_2b_fullft_10k": {
+      "model": "Qwen3.5-2B-Base",
+      "mode": "full_finetune_base + engram",
+      "training_steps": 10000,
+      "engram_layers": [1, 6, 12, 17],
+      "learning_rates": {
+        "base_lr": 1e-5,
+        "engram_lr": 5e-4
+      },
+      "training_stats": {
+        "initial_loss": 11.25,
+        "final_loss": 2.28,
+        "training_time_min": 66.2,
+        "peak_gpu_gb": 14.08
+      },
+      "experiment_dir": "experiments/qwen35_2b_fullft_10k",
+      "perplexity": {
+        "baseline_ppl": 16.31,
+        "baseline_ce_loss": 2.7918,
+        "engram_ppl": 11.44,
+        "engram_ce_loss": 2.4369,
+        "ppl_reduction_pct": -29.9
+      },
+      "downstream": {
+        "baseline": {
+          "hellaswag": 0.4735,
+          "piqa": 0.7454,
+          "arc_challenge": 0.3737
+        },
+        "engram": {
+          "hellaswag": 0.4752,
+          "piqa": 0.7383,
+          "arc_challenge": 0.3652
+        },
+        "delta": {
+          "hellaswag_pp": +0.17,
+          "piqa_pp": -0.71,
+          "arc_challenge_pp": -0.85
+        }
+      }
+    }
+  },
+  "summary_table": {
+    "description": "Aggregated results across all experiments. Delta values in percentage points. All downstream deltas are within noise.",
+    "rows": [
+      {
+        "experiment": "Qwen2.5-0.5B frozen 100K",
+        "ppl_base": 20.75,
+        "ppl_engram": 15.73,
+        "ppl_delta_pct": -24.2,
+        "hellaswag_delta_pp": +0.35,
+        "piqa_delta_pp": -1.14,
+        "arc_delta_pp": +0.34
+      },
+      {
+        "experiment": "Qwen2.5-1.5B frozen 5K",
+        "ppl_base": 14.84,
+        "ppl_engram": 11.02,
+        "ppl_delta_pct": -25.7,
+        "hellaswag_delta_pp": +0.3,
+        "piqa_delta_pp": null,
+        "arc_delta_pp": -0.6
+      },
+      {
+        "experiment": "Qwen3.5-4B frozen 10K",
+        "ppl_base": 12.87,
+        "ppl_engram": 9.76,
+        "ppl_delta_pct": -24.2,
+        "hellaswag_delta_pp": -0.02,
+        "piqa_delta_pp": -0.33,
+        "arc_delta_pp": +1.79
+      },
+      {
+        "experiment": "Qwen3.5-2B full FT 10K",
+        "ppl_base": 16.31,
+        "ppl_engram": 11.44,
+        "ppl_delta_pct": -29.9,
+        "hellaswag_delta_pp": +0.17,
+        "piqa_delta_pp": -0.71,
+        "arc_delta_pp": -0.85
+      }
+    ]
+  },
+  "hardware_constraints": {
+    "gpu": "NVIDIA RTX 4090 24GB",
+    "qwen35_4b_fullft_vram": "22.26 GB before optimizer states — OOM, not feasible",
+    "qwen35_2b_fullft_vram": "14.08 GB peak — fits comfortably",
+    "engram_embedding_storage": "mmap OffloadedEmbedding, ~10.17 GB fp16 on disk (not GPU)"
+  },
+  "architecture_notes": {
+    "qwen35_2b": {
+      "hidden_size": 2048,
+      "num_layers": 24,
+      "vocab_size": 248077,
+      "attention_layout": "6x(3xGatedDeltaNet + 1xFullAttention)",
+      "full_attention_layers": [3, 7, 11, 15, 19, 23],
+      "engram_layers": [1, 6, 12, 17],
+      "engram_trainable_params": 16850944,
+      "engram_size_mb_fp16": 33.70
+    },
+    "qwen35_4b": {
+      "engram_layers": [1, 8, 16, 23],
+      "engram_trainable_params": 21063680
+    },
+    "deviations_from_deepseek": [
+      "Hash function: fixed to DeepSeek's exact multiplicative hash with per-layer random multipliers",
+      "ShortConv: included — dilated depthwise conv1d (kernel=4, dilation=3) after gated value",
+      "Hyper-connection (hc_mult=4): CANNOT fix — structural backbone difference (DeepSeek-V3 has this, Qwen3.5 doesn't)",
+      "Embedding storage: uses mmap-backed OffloadedEmbedding (intentional for hardware constraints)"
+    ]
+  }
+}

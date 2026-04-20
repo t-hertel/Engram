@@ -1,0 +1,59 @@
+# Large generated data
+checkpoints/
+embedding_tables/
+data_cache/
+experiments/
+experiment_archive/
+drawio/
+figures/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs and temp files
+*.log
+*.jsonl
+*.pid
+run_*.sh
+
+# Non-essential scripts (earlier iterations, superseded)
+engram_qwen_integration.py
+train_engram.py
+train_engram_full.py
+train_experiment.py
+train_multidomain.py
+eval_all.py
+eval_multidomain.py
+eval_perplexity.py
+bench_downstream.py
+bench_engram_only.py
+bench_engram_qwen35.py
+bench_nvme_latency.py
+sweep_collisions.py
+engram_demo_v1.py
+
+# Scratch JSON from early exploration
+1.5b_ablation_*.json
+1.5b_long20k_result.json
+all_eval_results.json
+all_experiments.log
+baseline_multidomain_eval.json
+collision_sweep*.json
+eval_results.json
+eval_sweep_results.json
+math_benchmark_results.json
+math_only_eval_results.json
+nvme_benchmark.json
+training_log.jsonl
+
+# Outdated files
+Engram_paper.pdf
+RESULTS.md
+results/raw/
+
+# Editor / OS
+*.swp
+*.swo
+*~
+.DS_Store
